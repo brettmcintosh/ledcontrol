@@ -1,0 +1,16 @@
+body {
+    background-color: #080808;
+}
+
+#button-panel {
+    margin-top: 20px;
+}
+
+.panel-body {
+    text-align: center;
+}
+
+#led-form input {
+    margin-bottom: 5px;
+    /*width: 50px;*/
+}

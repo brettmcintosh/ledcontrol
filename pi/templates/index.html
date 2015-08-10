@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <div class="panel panel-default" id="button-panel">
+                <div class="panel-heading">
+                    LED Control
+                </div>
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <form id="address-form">
+                                <div class="form-group">
+                                    <!--<label for="address_select">Addresses</label>-->
+                                    <select multiple class="form-control" id="address_select">
+                                        {% for address in addresses.keys()|sort %}
+                                            <option value="{{ address }}" selected>{{ address }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            {% for command_name in commands.keys()|sort %}
+                            <button class="btn btn-success btn-block" id="{{ command_name }}-btn">{{ command_name|title }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-10 col-sm-offset-1">
+                            <form id="led-form">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Index 1" value="0" required>
+                                    <input type="text" class="form-control" placeholder="Index 2" value="0">
+                                    <input type="text" class="form-control" placeholder="Index 3" value="0">
+                                    <input type="text" class="form-control" placeholder="Index 4" value="0">
+                                    <input type="text" class="form-control" placeholder="Index 5" value="0">
+                                    <input type="text" class="form-control" placeholder="Index 6" value="0">
+                                    <input type="text" class="form-control" placeholder="Index 7" value="0">
+                                    <input type="text" class="form-control" placeholder="Index 8" value="0">
+                                    <button type="button" class="btn btn-success btn-block">Custom Command</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.LEDcontrol = {
+        sendCommand: function (event, command_name) {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", "/", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+            command=JSON.stringify(LEDcontrol.createCommand(command_name));
+            xmlhttp.send(command);
+        },
+        getAddresses: function(){
+            var addresses = [];
+            address_options = document.querySelectorAll('#address_select :checked');
+            for(var i = 0; i < address_options.length; i++){
+                addresses.push(address_options[i].value);
+            }
+            return addresses;
+        },
+        createCommand: function(command_name){
+            var command = {};
+            command.addresses = LEDcontrol.getAddresses();
+            command.command_name = command_name;
+            return command;
+
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        {% for command_name in commands.keys() %}
+            document.getElementById("{{ command_name }}-btn").addEventListener("click", function () {
+                LEDcontrol.sendCommand(event, "{{ command_name }}");
+            });
+        {% endfor %}
+    });
+
+</script>
+
+{% endblock body %}
