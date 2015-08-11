@@ -6,8 +6,8 @@ import logging
 import settings
 
 
-SERIAL_DEV = "/dev/ttyAMA0"
-BAUDRATE = 115200
+SERIAL_DEV = settings.SERIAL_DEV
+BAUDRATE = settings.BAUDRATE
 
 
 SUCCESS = b'\x00'

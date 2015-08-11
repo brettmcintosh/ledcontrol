@@ -29,7 +29,7 @@ void setup() {
 
 	// FastLED.addLeds<LPD8806, DATA_PIN_1, CLOCK_PIN_1, GRB, DATA_RATE_MHZ(12)>(leds1, NUM_LEDS);
 	FastLED.addLeds<LPD8806, DATA_PIN_1, CLOCK_PIN_1, GRB>(leds1, NUM_LEDS);
-	// FastLED.addLeds<LPD8806, DATA_PIN_1, CLOCK_PIN_1, GRB>(leds2, NUM_LEDS);
+	FastLED.addLeds<LPD8806, DATA_PIN_2, CLOCK_PIN_2, GRB>(leds1, NUM_LEDS);
 
 	strip1.rainbow(10, 128);
 	// CHSV c1 = CHSV(0, 255, 255);
