@@ -10,7 +10,9 @@
                 </div>
                 <div class="panel-body">
 
-                    <div class="row">
+
+
+                    <div class="row" id="address-form">
                         <div class="col-sm-10 col-sm-offset-1">
                             <form id="address-form">
                                 <div class="form-group">
@@ -24,32 +26,44 @@
                             </form>
                         </div>
                     </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-10 col-sm-offset-1">
-                            {% for command_name in commands.keys()|sort %}
-                            <button class="btn btn-success btn-block" id="{{ command_name }}-btn">{{ command_name|title }}</button>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-10 col-sm-offset-1">
-                            <form id="led-form">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="Index 1" value="0" required>
-                                    <input type="text" class="form-control" placeholder="Index 2" value="0">
-                                    <input type="text" class="form-control" placeholder="Index 3" value="0">
-                                    <input type="text" class="form-control" placeholder="Index 4" value="0">
-                                    <input type="text" class="form-control" placeholder="Index 5" value="0">
-                                    <input type="text" class="form-control" placeholder="Index 6" value="0">
-                                    <input type="text" class="form-control" placeholder="Index 7" value="0">
-                                    <input type="text" class="form-control" placeholder="Index 8" value="0">
-                                    <button type="button" class="btn btn-success btn-block">Custom Command</button>
+
+                    <ul class="nav nav-tabs nav-justified" id="command-tabs">
+                        <li role="presentation" class="active"><a href="#preset-buttons" aria-controls="preset-buttons"
+                                role="tab" data-toggle="tab">Presets</a></li>
+                        <li role="presentation"><a href="#custom-command" aria-controls="custom-command"
+                                role="tab" data-toggle="tab">Custom</a></li>
+                    </ul>
+
+                    <!-- tabs -->
+                    <div class="tab-content">
+
+                        <div role="tabpanel" class="tab-pane fade in active" id="preset-buttons">
+                            <div class="row">
+                                <div class="col-sm-10 col-sm-offset-1">
+                                    {% for command_name in commands.keys()|sort %}
+                                    <button class="btn btn-success btn-block" id="{{ command_name }}-btn">{{ command_name|title }}</button>
+                                    {% endfor %}
                                 </div>
-                            </form>
+                            </div>
                         </div>
+
+                        <div role="tabpanel" class="tab-pane fade" id="custom-command">
+                            <div class="row">
+                                <div class="col-sm-10 col-sm-offset-1">
+                                    <form id="custom-command-form">
+                                        <div class="form-group">
+                                            {% for i in range(8) %}
+                                                <input type="number" class="form-control" id="custom-{{ i }}" value="0" max="255" required>
+                                            {% endfor %}
+                                            <button type="submit" class="btn btn-success btn-block" id="custom-submit">Custom Command</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
+
                 </div>
             </div>
         </div>
@@ -58,16 +72,9 @@
 
 <script>
     window.LEDcontrol = {
-        sendCommand: function (event, command_name) {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("POST", "/", true);
-            xmlhttp.setRequestHeader("Content-type", "application/json");
-            command=JSON.stringify(LEDcontrol.createCommand(command_name));
-            xmlhttp.send(command);
-        },
         getAddresses: function(){
             var addresses = [];
-            address_options = document.querySelectorAll('#address_select :checked');
+            var address_options = document.querySelectorAll('#address_select :checked');
             for(var i = 0; i < address_options.length; i++){
                 addresses.push(address_options[i].value);
             }
@@ -78,16 +85,40 @@
             command.addresses = LEDcontrol.getAddresses();
             command.command_name = command_name;
             return command;
-
+        },
+        sendCommand: function (command) {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", "/", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+            xmlhttp.send(JSON.stringify(command));
+        },
+        createCustomCommand: function(){
+            var command = LEDcontrol.createCommand("custom");
+            var custom_inputs = document.querySelectorAll('#custom-command-form input');
+            command.custom_values = [];
+            for(var i = 0; i < custom_inputs.length; i++){
+                command.custom_values.push(custom_inputs[i].value);
+            }
+            return command;
         }
     };
 
     document.addEventListener('DOMContentLoaded', function() {
         {% for command_name in commands.keys() %}
             document.getElementById("{{ command_name }}-btn").addEventListener("click", function () {
-                LEDcontrol.sendCommand(event, "{{ command_name }}");
+                LEDcontrol.sendCommand(LEDcontrol.createCommand("{{ command_name }}"));
             });
         {% endfor %}
+
+        $("#custom-command-form").submit(function(event){
+            if(!this.checkValidity()){
+                event.preventDefault();
+            }else{
+                var command = LEDcontrol.createCustomCommand();
+                LEDcontrol.sendCommand(command);
+                event.preventDefault();
+            }
+        });
     });
 
 </script>

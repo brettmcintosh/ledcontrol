@@ -27,12 +27,22 @@ def index():
         command_addresses = command.get('addresses')
         logging.debug("Received: {}".format(str(command)))
 
-        if command_name in commands.keys():
-            for addr in command_addresses:
-                if addr in receiving_addresses.keys():
-                    master.send_command(receiving_addresses[addr], create_command_array(commands[command_name]))
+        if command_name == "custom":
+            custom = command.get('custom_values')
+            if custom is not None:
+                custom = [int(i) for i in custom]
+                send_all(command_addresses, create_command_array(custom))
+
+        elif command_name in commands.keys():
+            send_all(command_addresses, create_command_array(commands[command_name]))
 
         return "Success"
+
+
+def send_all(command_addresses, command):
+    for addr in command_addresses:
+        if addr in receiving_addresses.keys():
+            master.send_command(receiving_addresses[addr], command)
 
 
 if __name__ == '__main__':
