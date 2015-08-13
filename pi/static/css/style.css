@@ -12,9 +12,12 @@ body {
 
 #custom-command-form input {
     margin-bottom: 5px;
-    /*width: 50px;*/
 }
 
 .tab-content {
     padding-top: 10px;
+}
+
+#result-alerts {
+    margin-top: 10px;
 }

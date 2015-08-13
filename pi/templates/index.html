@@ -10,7 +10,7 @@
                 </div>
                 <div class="panel-body">
 
-
+{#                    <div id="result-alerts"></div>#}
 
                     <div class="row" id="address-form">
                         <div class="col-sm-10 col-sm-offset-1">
@@ -64,6 +64,8 @@
 
                     </div>
 
+                    <div id="result-alerts"></div>
+
                 </div>
             </div>
         </div>
@@ -86,12 +88,6 @@
             command.command_name = command_name;
             return command;
         },
-        sendCommand: function (command) {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.open("POST", "/", true);
-            xmlhttp.setRequestHeader("Content-type", "application/json");
-            xmlhttp.send(JSON.stringify(command));
-        },
         createCustomCommand: function(){
             var command = LEDcontrol.createCommand("custom");
             var custom_inputs = document.querySelectorAll('#custom-command-form input');
@@ -100,6 +96,46 @@
                 command.custom_values.push(custom_inputs[i].value);
             }
             return command;
+        },
+        sendCommand: function (command) {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", "/", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+            xmlhttp.onreadystatechange = function () {
+                var failures = [];
+                var results = {};
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    results = JSON.parse(xmlhttp.responseText);
+                    for (var key in results) {
+                        if (results.hasOwnProperty(key)) {
+                            if (results[key] === 'No response') {
+                                failures.push(key);
+                            }
+                        }
+                    }
+                    if (failures.length > 0){
+                        LEDcontrol.createAlerts(failures);
+                    }
+                }
+            };
+            xmlhttp.send(JSON.stringify(command));
+            return xmlhttp;
+        },
+        createAlerts: function (failures) {
+            var close_delay = 3000;
+            var result_alerts = document.getElementById('result-alerts');
+            var alert_text = failures.join(' & ');
+            var alert_div = document.createElement("div");
+            alert_div.className = "alert alert-danger fade in";
+            alert_div.setAttribute("role", "alert");
+            alert_div.innerHTML = '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\
+                                   <span aria-hidden="true">&times;</span></button>\
+                                   <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span> \
+                                   No response from ' + alert_text;
+            result_alerts.appendChild(alert_div);
+            window.setTimeout(function () {
+                $(alert_div).alert('close');
+            }, close_delay);
         }
     };
 

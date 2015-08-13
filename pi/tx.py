@@ -33,6 +33,7 @@ class Master(XBee):
 
         send_attempts = 0
         self.ack_received = False
+        result = ''
         while not self.ack_received:
             self.send("tx", dest_addr=address, frame_id=self.frame_counter, data=command_array)
 
@@ -48,11 +49,15 @@ class Master(XBee):
                 # raise NoACKException('No ACK received after {} attempts.'.format(send_attempts))
                 # print('No ACK received after {} attempts.'.format(send_attempts))
                 logging.warning('No ACK received after {} attempts.'.format(send_attempts))
+                result = 'No response'
                 break
 
         if self.ack_received:
             logging.debug("Command sent successfully.")
             self.increment_frame_counter()
+            result = 'Success'
+
+        return result
 
     def receive_ack(self, data):
         status = data['status']

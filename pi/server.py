@@ -1,5 +1,5 @@
 import logging
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import tx
 import settings
 from commands import commands, create_command_array
@@ -26,24 +26,27 @@ def index():
         command_name = command.get('command_name')
         command_addresses = command.get('addresses')
         logging.debug("Received: {}".format(str(command)))
+        results = {}
 
         if command_name == "custom":
             custom = command.get('custom_values')
             if custom is not None:
                 custom = [int(i) for i in custom]
-                send_all(command_addresses, create_command_array(custom))
+                results = send_all(command_addresses, create_command_array(custom))
 
         elif command_name in commands.keys():
-            send_all(command_addresses, create_command_array(commands[command_name]))
+            results = send_all(command_addresses, create_command_array(commands[command_name]))
 
-        return "Success"
+        return jsonify(**results)
 
 
 def send_all(command_addresses, command):
+    results = {}
     for addr in command_addresses:
         if addr in receiving_addresses.keys():
-            master.send_command(receiving_addresses[addr], command)
-
+            result = master.send_command(receiving_addresses[addr], command)
+            results[addr] = result
+    return results
 
 if __name__ == '__main__':
     app.run(*settings.HOST)

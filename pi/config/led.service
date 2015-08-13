@@ -3,8 +3,8 @@ Description=LED Web Control Service
 
 [Service]
 TimeoutStartSec=0
-ExecStart=/usr/bin/python3 /home/randy/ledpi/server.py
-WorkingDirectory=/home/randy/ledpi/
+ExecStart=/usr/bin/python3 /home/randy/ledcontrol/pi/server.py
+WorkingDirectory=/home/randy/ledcontrol/pi
 User=root
 Restart=always
 
