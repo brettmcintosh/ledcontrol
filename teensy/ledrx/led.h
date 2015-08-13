@@ -2,11 +2,11 @@
 
 #include "xbee_comm.h"
 
-#define NUM_LEDS 320
-#define DATA_PIN_1 12
+#define NUM_LEDS 160
+#define DATA_PIN_1 15
 #define CLOCK_PIN_1 14
-#define DATA_PIN_2 16
-#define CLOCK_PIN_2 17
+#define DATA_PIN_2 17
+#define CLOCK_PIN_2 16
 
 #define NONE 0
 #define RAINBOW 1
