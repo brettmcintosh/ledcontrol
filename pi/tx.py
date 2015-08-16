@@ -37,6 +37,7 @@ class Master(XBee):
         while not self.ack_received:
             self.send("tx", dest_addr=address, frame_id=self.frame_counter, data=command_array)
 
+            self.increment_frame_counter()
             time_elapsed = 0
             while not self.ack_received and time_elapsed < self.ack_timeout:
                 time.sleep(.001)
@@ -54,7 +55,7 @@ class Master(XBee):
 
         if self.ack_received:
             logging.debug("Command sent successfully.")
-            self.increment_frame_counter()
+            # self.increment_frame_counter()
             result = 'Success'
 
         return result
