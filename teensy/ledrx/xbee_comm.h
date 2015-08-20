@@ -4,30 +4,30 @@
 XBee xbee = XBee();
 XBeeResponse response = XBeeResponse();
 Rx16Response rx = Rx16Response();
-uint8_t rx_data = 1;
+// uint8_t rx_data = 1;
 
 // wait counter
-int delay_counter = 0;
+// int delay_counter = 0;
 
 // command variable defined by rx packet
 int command = 1;
 
 // payload
 uint8_t packet[8];
+uint8_t packet_copy[8];
+// uint8_t packet[8] = {6, 100, 2, 0, 0, 0, 0, 0};
 
-#define PACKET_SPAM 1
+// unsigned long start = millis();
+// uint8_t payload[8];
 
-unsigned long start = millis();
-uint8_t payload[8];
+// TxStatusResponse txStatus = TxStatusResponse();
+// Tx16Request tx2 = Tx16Request(0x1020, payload, sizeof(payload));
+// Tx16Request tx3 = Tx16Request(0x1030, payload, sizeof(payload));
+// Tx16Request tx4 = Tx16Request(0x1040, payload, sizeof(payload));
+// Tx16Request tx5 = Tx16Request(0x1072, payload, sizeof(payload));
+// Tx16Request tx6 = Tx16Request(0x1060, payload, sizeof(payload));
 
-TxStatusResponse txStatus = TxStatusResponse();
-Tx16Request tx2 = Tx16Request(0x1020, payload, sizeof(payload));
-Tx16Request tx3 = Tx16Request(0x1030, payload, sizeof(payload));
-Tx16Request tx4 = Tx16Request(0x1040, payload, sizeof(payload));
-Tx16Request tx5 = Tx16Request(0x1072, payload, sizeof(payload));
-Tx16Request tx6 = Tx16Request(0x1060, payload, sizeof(payload));
-
-Tx16Request address_list[] = {tx2, tx3, tx4, tx5, tx6};
+// Tx16Request address_list[] = {tx2, tx3, tx4, tx5, tx6};
 
 void receive_command(){
 	xbee.readPacket();
@@ -89,4 +89,13 @@ void receive_packet(){
 	// }else{
 	// 	Serial.println("Unknown Error!");
 	}
+}
+
+bool check_for_new_data(){
+	for(int i = 0; i < 8; i++){
+		if(packet[i] != packet_copy[i]){
+			return true;
+		}
+	}
+	return false;
 }

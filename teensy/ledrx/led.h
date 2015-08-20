@@ -3,10 +3,16 @@
 #include "xbee_comm.h"
 
 #define NUM_LEDS 160
+
 #define DATA_PIN_1 15
 #define CLOCK_PIN_1 14
 #define DATA_PIN_2 17
 #define CLOCK_PIN_2 16
+#define DATA_PIN_3 19
+#define CLOCK_PIN_3 18
+#define DATA_PIN_4 21
+#define CLOCK_PIN_4 20
+
 
 #define NONE 0
 #define RAINBOW 1
@@ -14,26 +20,25 @@
 #define SCANNER 3
 #define FADE 4
 #define BOUNCE 5
+#define CONFETTI 6
 
 #define FORWARD 1
 #define REVERSE 0
-
-// enum Animation_id {NONE=1, RAINBOW=2, THEATER_CHASE=3, SCANNER=4, FADE=5, BOUNCE=6}
-// enum Direction {FORWARD=1, REVERSE=0}
 
 class Strip {
 	public:
 	CRGB *strip;
 
 	uint8_t current_animation;
-	uint8_t direction;
+	uint8_t direction = FORWARD;
 
 	unsigned long interval;
 	unsigned long last_update;
 
 	uint8_t length;
 	uint8_t brightness;
-	uint32_t color1, color2;
+	uint8_t color1, color2;
+	uint8_t range1, range2;
 	uint16_t total_steps;
 	uint16_t current_step;
 
@@ -60,14 +65,16 @@ class Strip {
 	void reverse();
 	void rainbow(uint8_t rainbow_interval, uint8_t brightness, uint8_t dir);
 	void rainbow_update();
-	void theater_chase(CHSV color1, CHSV color2, uint8_t interval, uint8_t gap_length, uint8_t bright=255, uint8_t dir=FORWARD);
+	void theater_chase(CHSV c1, CHSV c2, uint8_t interval, uint8_t gap_length, uint8_t bright=255, uint8_t dir=FORWARD);
 	void theater_chase_update();
-	void scanner(CHSV color, uint8_t interval, uint8_t bright, uint16_t start);
+	void scanner(CHSV c1, uint8_t interval, uint8_t bright, uint16_t start);
 	void scanner_update();
 	void fade(uint8_t c1, uint8_t c2, uint16_t steps, uint8_t fade_interval, uint8_t dir);
 	void fade_update();
 	void bounce(uint8_t bounce_interval, uint8_t bright, uint16_t start);
 	void bounce_update();
+	void confetti(uint8_t base_hue, uint8_t c_interval, uint8_t color_variety, uint8_t sat);
+	void confetti_update();
 };
 
 void Strip::update(){
@@ -81,7 +88,9 @@ void Strip::update(){
 	// Serial.println(current_animation == RAINBOW);
 	// Serial.println((millis() - last_update) > interval1);
 	// Serial.println(".");
-	if(command != current_animation){
+
+	// if(command != current_animation){
+	if(check_for_new_data()){
 		switch (command) {
 			case RAINBOW:
 	      		rainbow(packet[1], packet[2], packet[3]);
@@ -99,6 +108,9 @@ void Strip::update(){
     		case BOUNCE:
     			bounce(packet[1], packet[2], packet[3]);
     			break;	
+    		case CONFETTI:
+    			confetti(packet[1], packet[2], packet[3], packet[4]);
+    			break;
 		    default:
 		    	Serial.println("?");
 		        break;
@@ -123,33 +135,13 @@ void Strip::update(){
     		case BOUNCE:
     			bounce_update();
     			break;	
+			case CONFETTI:
+				confetti_update();
+				break;
 		    default:
 		        break;
 		}
 	}
-
-	// if((millis() - last_update) > interval){
-	// 	last_update = millis();
-	// 	switch (current_animation) {
-	// 	    case RAINBOW:
-	//       		rainbow_update();
-	// 	        break;
-	//         case THEATER_CHASE:
-	//         	theater_chase_update();
-	//         	break;
-	//     	case SCANNER:
-	//         	scanner_update();
-	//         	break;
- //        	case FADE:
- //        		fade_update();
- //        		break;
- //    		case BOUNCE:
- //    			bounce_update();
- //    			break;	
-	// 	    default:
-	// 	        break;
-	// 	}
-	// }
 }
 
 void Strip::increment(){
@@ -292,7 +284,6 @@ void Strip::fade(uint8_t c1, uint8_t c2, uint16_t steps, uint8_t fade_interval, 
 	current_step = 0;
 	color1 = c1;
 	color2 = c2;
-	current_step = 0;
 	direction = dir;
 }
 
@@ -322,6 +313,7 @@ void Strip::bounce(uint8_t bounce_interval, uint8_t bright, uint16_t start){
 	total_steps = NUM_LEDS + 10;
 	current_step = start;
 	brightness = bright;
+	direction = FORWARD;
 	for(int i = 0; i < 10; i++){
 		step_array[i] = random(0, total_steps);
 		color_array[i] = random8();
@@ -360,4 +352,24 @@ void Strip::bounce_update(){
 	FastLED.show();
 	increment_array();
 	// Serial.println("");
+}
+
+void Strip::confetti(uint8_t base_hue, uint8_t c_interval, uint8_t color_variety, uint8_t sat){
+	current_animation = CONFETTI;
+	interval = c_interval;
+	total_steps = 2000;
+	current_step = 0;
+	color1 = base_hue;
+	range1 = color_variety;
+	range2 = sat;
+}
+
+void Strip::confetti_update(){
+	fadeToBlackBy(strip, NUM_LEDS, 10);
+	int pos = random16(NUM_LEDS);
+	strip[pos] += CHSV( color1 + random8(range1), range2, 255);
+
+	FastLED.show();
+	increment();
+	Serial.println("confetti");
 }
