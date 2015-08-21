@@ -32,9 +32,9 @@ void setup() {
 	FastLED.addLeds<LPD8806, DATA_PIN_3, CLOCK_PIN_3, GRB>(leds1, NUM_LEDS);
 	FastLED.addLeds<LPD8806, DATA_PIN_4, CLOCK_PIN_4, GRB>(leds1, NUM_LEDS);
 
-	strip1.rainbow(10, 128);
-	// strip1.bounce(1, 255, 0);
-	// strip1.confetti(100, 2);
+	// strip1.rainbow(10, 128);
+	// strip1.bounce(1, 255, 32);
+	strip1.sparkle(0, 5, 30, 255);
 }
 
 void loop() {

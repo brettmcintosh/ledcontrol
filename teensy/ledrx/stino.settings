@@ -1,0 +1,20 @@
+{
+    "arduino_folder": "/home/randy/arduino-1.0.6", 
+    "baudrate": 10, 
+    "board": 1, 
+    "board_option": {
+        "2.1": [
+            0, 
+            0, 
+            0
+        ]
+    }, 
+    "build_folder": "/home/randy/arduino-1.0.6/BUILD", 
+    "full_compilation": false, 
+    "line_ending": 1, 
+    "platform": 2, 
+    "platform_name": "Teensy Boards", 
+    "serial_port": 0, 
+    "show_compilation_output": true, 
+    "show_upload_output": true
+}
