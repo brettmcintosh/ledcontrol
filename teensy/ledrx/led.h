@@ -2,16 +2,27 @@
 
 #include "xbee_comm.h"
 
-#define NUM_LEDS 160
+/* Brett's stuff*/
+// #define NUM_LEDS 160
+
+// #define DATA_PIN_1 15
+// #define CLOCK_PIN_1 14
+// #define DATA_PIN_2 17
+// #define CLOCK_PIN_2 16
+// #define DATA_PIN_3 19
+// #define CLOCK_PIN_3 18
+// #define DATA_PIN_4 21
+// #define CLOCK_PIN_4 20
+
+/* Janky stuff */
+#define NUM_LEDS 300
 
 #define DATA_PIN_1 15
-#define CLOCK_PIN_1 14
-#define DATA_PIN_2 17
-#define CLOCK_PIN_2 16
-#define DATA_PIN_3 19
-#define CLOCK_PIN_3 18
-#define DATA_PIN_4 21
-#define CLOCK_PIN_4 20
+#define DATA_PIN_2 16
+#define DATA_PIN_3 17
+#define DATA_PIN_4 18
+#define	DATA_PIN_5 19
+#define DATA_PIN_6 20
 
 
 #define NONE 0
