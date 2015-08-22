@@ -35,9 +35,11 @@ void setup() {
 	// strip1.rainbow(10, 128);
 	// strip1.bounce(1, 255, 32);
 	strip1.sparkle(0, 5, 30, 255);
+	// strip1.janky_chase(15, 2, 8, 2, 10, 40, 0);
 }
 
 void loop() {
 	strip1.update();
+	FastLED.show();
 	// Serial.println(".");
 }

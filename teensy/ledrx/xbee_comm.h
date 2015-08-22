@@ -94,6 +94,7 @@ void receive_packet(){
 bool check_for_new_data(){
 	for(int i = 0; i < 8; i++){
 		if(packet[i] != packet_copy[i]){
+			Serial.println("New Packet Data.");
 			memcpy(packet_copy, packet, 8);
 			return true;
 		}

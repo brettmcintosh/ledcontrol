@@ -21,6 +21,7 @@
 #define FADE 4
 #define BOUNCE 5
 #define SPARKLE 6
+#define JANKY_CHASE 7
 
 #define FORWARD 1
 #define REVERSE 0
@@ -39,7 +40,9 @@ class Strip {
 	uint8_t brightness;
 	uint8_t color1, color2;
 	uint8_t range1, range2;
+	uint8_t min1, min2, max1, max2;
 	uint8_t fade_speed;
+	uint8_t random_color;
 	uint16_t total_steps;
 	uint16_t current_step;
 
@@ -76,6 +79,8 @@ class Strip {
 	void bounce_update();
 	void sparkle(uint8_t base_hue, uint8_t c_interval, uint8_t color_variety, uint8_t sat);
 	void sparkle_update();
+	void janky_chase(uint8_t j_interval, uint8_t l_min, uint8_t l_max, uint8_t b_min, uint8_t b_max, uint8_t hue, uint8_t random_color);
+	void janky_chase_update();
 };
 
 void Strip::update(){
@@ -92,10 +97,10 @@ void Strip::update(){
 
 	// if(command != current_animation){
 	if(check_for_new_data()){
+	    // Serial.println(command);
 		switch (command) {
 			case RAINBOW:
 	      		rainbow(packet[1], packet[2], packet[3]);
-	      		Serial.println("Rainbow command received.");
 		        break;
 	        case THEATER_CHASE:
 	        	theater_chase(CHSV(packet[1], 255, 255), CHSV(packet[2],255, 255), packet[3], packet[4], packet[5], packet[6]);
@@ -112,6 +117,9 @@ void Strip::update(){
     		case SPARKLE:
     			sparkle(packet[1], packet[2], packet[3], packet[4]);
     			break;
+			case JANKY_CHASE:
+				janky_chase(packet[1], packet[2], packet[3], packet[4], packet[5], packet[6], packet[7]);
+				break;
 		    default:
 		    	Serial.println("?");
 		        break;
@@ -138,6 +146,9 @@ void Strip::update(){
     			break;	
 			case SPARKLE:
 				sparkle_update();
+				break;
+			case JANKY_CHASE:
+				janky_chase_update();
 				break;
 		    default:
 		        break;
@@ -223,7 +234,7 @@ void Strip::rainbow_update(){
 		// strip[i].setHue(color);
 		strip[i] = CHSV(color, 255, brightness);
 	}
-	FastLED.show();
+	// FastLED.show();
 	// Serial.println("showed");
 	increment();
 	// Serial.println('incremented!');
@@ -234,7 +245,8 @@ void Strip::theater_chase(CHSV background, CHSV foreground, uint8_t theater_inte
 	interval = theater_interval;
 	total_steps = NUM_LEDS;
 	hsv1 = foreground;
-	hsv2 = background;
+	// hsv2 = background;
+	hsv2 = CHSV(0, 0, 0);
 	current_step = 0;
 	direction = dir;
 	brightness = bright;
@@ -251,7 +263,7 @@ void Strip::theater_chase_update(){
 		}
 		strip[i] = color;
 	}
-	FastLED.show();
+	// FastLED.show();
 	increment();
 	// Serial.println("TheATER UPDATE");
 }
@@ -274,7 +286,7 @@ void Strip::scanner_update(){
 			strip[i].fadeToBlackBy(64);
 		}
 	}
-	FastLED.show();
+	// FastLED.show();
 	increment();
 }
 
@@ -304,7 +316,7 @@ void Strip::fade_update(){
 		color2 = random8();
 	}
 
-	FastLED.show();
+	// FastLED.show();
 	increment();
 }
 
@@ -355,7 +367,7 @@ void Strip::bounce_update(){
 		// 	}
 		// }
 	}
-	FastLED.show();
+	// FastLED.show();
 	increment_array();
 	// Serial.println("");
 }
@@ -375,7 +387,49 @@ void Strip::sparkle_update(){
 	int pos = random16(NUM_LEDS);
 	strip[pos] += CHSV( color1 + random8(range1), range2, 255);
 
-	FastLED.show();
+	// FastLED.show();
 	increment();
 	// Serial.println("sparkle");
+}
+
+void Strip::janky_chase(uint8_t j_interval, uint8_t l_min, uint8_t l_max, uint8_t b_min, uint8_t b_max, uint8_t hue, uint8_t rand_color){
+	current_animation = JANKY_CHASE;
+	interval = j_interval;
+	min1 = l_min;
+	max1 = l_max;
+	min2 = b_min;
+	max2 = b_max;
+	range1 = random8(l_min, l_max);
+	range2 = random8(b_min, b_max);
+	random_color = rand_color;
+	hsv1 = CHSV(hue, 255, 255);
+	if(random_color){
+		hsv1 = CHSV(random8(), 255, 255);
+	}
+}
+
+void Strip::janky_chase_update(){
+	Serial.println('.');
+	Serial.println(range1);
+	Serial.println(range2);
+	if(range1 > 0){
+		strip[0] = hsv1;
+		range1--;
+	}else{
+		if(range2 > 0){
+			// strip[0] = CRGB::Black;
+			strip[0].fadeToBlackBy(200);
+			range2--;
+		}else{
+			range1 = random8(min1, max1);
+			range2 = random8(min2, max2);
+			if(random_color){
+				hsv1 = CHSV(random8(), 255, 255);
+			}
+		}
+	}
+
+	for(int i = NUM_LEDS - 1; i > 0; i--){
+		strip[i] = strip[i - 1];
+	}
 }
