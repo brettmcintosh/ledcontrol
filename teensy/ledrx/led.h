@@ -17,12 +17,12 @@
 /* Janky stuff */
 #define NUM_LEDS 300
 
-#define DATA_PIN_1 15
-#define DATA_PIN_2 16
-#define DATA_PIN_3 17
-#define DATA_PIN_4 18
-#define	DATA_PIN_5 19
-#define DATA_PIN_6 20
+#define DATA_PIN_1 14
+#define DATA_PIN_2 15
+#define DATA_PIN_3 16
+#define DATA_PIN_4 17
+#define	DATA_PIN_5 18
+#define DATA_PIN_6 19 
 
 
 #define NONE 0
