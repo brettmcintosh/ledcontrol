@@ -58,12 +58,14 @@
 										<div class="form-group">
 											{%for key in command_parameters%}											
 												{% for innerKey in command_parameters[key] %}
-													{{innerKey.name}}
+													<div class="functionHeader">
+														{{innerKey.name}}&nbsp;:&nbsp;<output for="custom-{{ innerKey.order }}" id="customValue-{{ innerKey.order }}">{{innerKey.default}}</output>
+													</div>
 													{% if innerKey.name == "Color" %}
 														<img src="../static/images/colorChart.png">
 													{% endif %}
 													<input type="{{innerKey.type}}" class="form-control" id="custom-{{ innerKey.order }}" value="{{innerKey.default}}" min="{{innerKey.min}}" max="{{innerKey.max}}" oninput="outputUpdate(value, {{innerKey.order}})" required>
-													<output for="custom-{{ innerKey.order }}" id="customValue-{{ innerKey.order }}">{{innerKey.default}}</output>
+													
 												{%endfor%}
 											{%endfor%}
 										</div>

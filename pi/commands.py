@@ -16,3 +16,16 @@ commands = {'rainbow': [1, 20, 255, 1],
             'sparkle white': [6, 0, (1, 15), 0, 0],
             'random chase': [7, 25, 2, 8, 2, 8, 40, 1],
             'janky chase': [7, 25, 2, 6, 4, 8, 40, 0], }
+
+command_parameters = {#'rainbow':[	
+				#{'type':'range', 'name':'Interval', 'min':0, 'max':30, 'order':1, 'default':20}, 
+				#{'type':'range', 'name':'Brightness', 'min':0, 'max':255, 'order':2, 'default':255}, 
+				#{'type':'checkbox', 'name':'Reverse Direction', 'min':0, 'max':1, 'order':3, 'default':1}],
+			'theater_chase': [		
+				{'type':'range', 'name':'Color', 'min':0, 'max':255, 'order':1, 'default':50}, 
+				{'type':'range', 'name':'Color', 'min':0, 'max':255, 'order':2, 'default':150}, 
+				{'type':'range', 'name':'Interval', 'min':0, 'max':30, 'order':3, 'default':35}, 
+				{'type':'range', 'name':'Gap Length', 'min':0, 'max':30, 'order':4, 'default':5}, 
+				{'type':'range', 'name':'Brightness', 'min':0, 'max':255, 'order':5, 'default':255}, 
+				{'type':'checkbox', 'name':'Reverse Direction', 'min':0, 'max':1, 'order':6, 'default':1}],
+			}

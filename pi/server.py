@@ -2,10 +2,8 @@ import logging
 from flask import Flask, request, render_template, jsonify
 #import tx
 import settings
-from commands import commands, create_command_array
+from commands import commands, create_command_array, command_parameters
 from addresses import receiving_addresses
-from variables import parameters
-
 
 app = Flask(__name__)
 #master = tx.Master()
@@ -20,7 +18,7 @@ logging.getLogger().addHandler(logging.StreamHandler())
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('index.html', commands=commands, addresses=receiving_addresses, command_parameters=parameters)
+        return render_template('index.html', commands=commands, addresses=receiving_addresses, command_parameters=command_parameters)
 
     if request.method == 'POST':
         command = request.get_json()

@@ -33,3 +33,13 @@ input[type=checkbox] {
     -o-transition: none;
 }
 
+.functionHeader {
+    font-size: 16px;
+}
+
+output {
+	display:inline;
+	font-size:inherit;
+	font-weight:bold;
+}
+
