@@ -20,7 +20,7 @@ logging.getLogger().addHandler(logging.StreamHandler())
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('index.html', commands=commands, addresses=receiving_addresses, parameters=parameters)
+        return render_template('index.html', commands=commands, addresses=receiving_addresses, command_parameters=parameters)
 
     if request.method == 'POST':
         command = request.get_json()

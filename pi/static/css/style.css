@@ -2,6 +2,10 @@ body {
     background-color: #080808;
 }
 
+img {
+    width: 100%;
+}
+
 #button-panel {
     margin-top: 20px;
 }
@@ -21,3 +25,11 @@ body {
 #result-alerts {
     margin-top: 10px;
 }
+
+input[type=checkbox] {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition: none;
+    -o-transition: none;
+}
+
