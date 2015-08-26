@@ -56,7 +56,8 @@
 											<input type="number" class="form-control" id="custom-0" value="0" max="7" required>
 										</div>
 										<div class="form-group">
-											{%for key in command_parameters%}											
+											{%for key in command_parameters%}		
+												<h3>{{key}}</h3>
 												{% for innerKey in command_parameters[key] %}
 													<div class="functionHeader">
 														{{innerKey.name}}&nbsp;:&nbsp;<output for="custom-{{ innerKey.order }}" id="customValue-{{ innerKey.order }}">{{innerKey.default}}</output>
@@ -64,8 +65,7 @@
 													{% if innerKey.name == "Color" %}
 														<img src="../static/images/colorChart.png">
 													{% endif %}
-													<input type="{{innerKey.type}}" class="form-control" id="custom-{{ innerKey.order }}" value="{{innerKey.default}}" min="{{innerKey.min}}" max="{{innerKey.max}}" oninput="outputUpdate(value, {{innerKey.order}})" required>
-													
+													<input type="{{innerKey.type}}" class="form-control" id="custom-{{ innerKey.order }}" value="{{innerKey.default}}" min="{{innerKey.min}}" max="{{innerKey.max}}" oninput="outputUpdate(value, {{innerKey.order}})" required {% if innerKey.default == 1 %} checked {% endif %}>
 												{%endfor%}
 											{%endfor%}
 										</div>
