@@ -16,3 +16,7 @@ commands = {'rainbow': [1, 20, 255, 1],
             'sparkle white': [6, 0, (1, 15), 0, 0],
             'random chase': [7, 25, 2, 8, 2, 8, 40, 1],
             'janky chase': [7, 25, 2, 6, 4, 8, 40, 0], }
+
+
+command_parameters = {'rainbow': [['interval', 0, 30], ['brightness', 0, 255], ['direction', 0, 1]],
+                      'theater': [], } # etc.

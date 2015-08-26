@@ -1,8 +1,9 @@
 import logging
 from flask import Flask, request, render_template, jsonify
+from flask.json import dumps
 import tx
 import settings
-from commands import commands, create_command_array
+from commands import commands, create_command_array, command_parameters
 from addresses import receiving_addresses
 
 
@@ -38,6 +39,16 @@ def index():
             results = send_all(command_addresses, create_command_array(commands[command_name]))
 
         return jsonify(**results)
+
+
+@app.route('/api/parameters/<command_name>', methods=['GET', ])
+def get_params(command_name):
+    if request.method == 'GET':
+        print(command_name)
+        params = command_parameters.get(command_name)
+        if params is not None:
+            return dumps(params)
+    return "Command not found"
 
 
 def send_all(command_addresses, command):

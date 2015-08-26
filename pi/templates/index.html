@@ -52,7 +52,13 @@
                                 <div class="col-sm-10 col-sm-offset-1">
                                     <form id="custom-command-form">
                                         <div class="form-group">
-                                            {% for i in range(8) %}
+                                            <select class="form-control" id="custom-command-name"
+                                                    onchange="LEDcontrol.getCommandParameters(this.options[this.selectedIndex].text)">
+                                                {% for command_name, initializer in commands.items()|sort %}
+                                                    <option id="{{ command_name }}-parameter" value="{{ initializer[0] }}">{{ command_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            {% for i in range(1, 8) %}
                                                 <input type="number" class="form-control" id="custom-{{ i }}" value="0" max="255" required>
                                             {% endfor %}
                                             <button type="submit" class="btn btn-success btn-block" id="custom-submit">Custom Command</button>
@@ -91,7 +97,10 @@
         createCustomCommand: function(){
             var command = LEDcontrol.createCommand("custom");
             var custom_inputs = document.querySelectorAll('#custom-command-form input');
+            var command_select = document.getElementById("custom-command-name");
+            var command_value = command_select.options[command_select.selectedIndex].value;
             command.custom_values = [];
+            command.custom_values.push(command_value);
             for(var i = 0; i < custom_inputs.length; i++){
                 command.custom_values.push(custom_inputs[i].value);
             }
@@ -136,6 +145,19 @@
             window.setTimeout(function () {
                 $(alert_div).alert('close');
             }, close_delay);
+        },
+        getCommandParameters: function(command_name) {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("GET", "/api/parameters/" + command_name, true);
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    var params = JSON.parse(xmlhttp.responseText);
+                    console.log(params);
+                    // received params and update field data
+                }
+            };
+            xmlhttp.send();
         }
     };
 
@@ -144,6 +166,19 @@
             document.getElementById("{{ command_name }}-btn").addEventListener("click", function () {
                 LEDcontrol.sendCommand(LEDcontrol.createCommand("{{ command_name }}"));
             });
+{#            document.getElementById("{{ command_name }}-parameter").addEventListener("click", function () {#}
+{#                var xmlhttp = new XMLHttpRequest();#}
+{#                xmlhttp.open("GET", "/api/parameters/{{ command_name }}", true);#}
+{#                xmlhttp.setRequestHeader("Content-type", "application/json");#}
+{#                xmlhttp.onreadystatechange = function () {#}
+{#                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {#}
+{#                        var params = JSON.parse(xmlhttp.responseText);#}
+{#                        console.log(params);#}
+{#                        // received params and update field data#}
+{#                    }#}
+{#                };#}
+{#                xmlhttp.send();#}
+{#            });#}
         {% endfor %}
 
         $("#custom-command-form").submit(function(event){
