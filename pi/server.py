@@ -1,26 +1,26 @@
 import logging
 from flask import Flask, request, render_template, jsonify
 from flask.json import dumps
-import tx
+#import tx
 import settings
 from commands import commands, create_command_array, command_parameters
 from addresses import receiving_addresses
 
 
 app = Flask(__name__)
-master = tx.Master()
+#master = tx.Master()
 
 
-logging.basicConfig(filename=settings.LOG_FILE_PATH,
-                    format='%(asctime)s %(levelname)s: %(message)s',
-                    level=logging.DEBUG)
-logging.getLogger().addHandler(logging.StreamHandler())
+#logging.basicConfig(filename=settings.LOG_FILE_PATH,
+#                    format='%(asctime)s %(levelname)s: %(message)s',
+#                    level=logging.DEBUG)
+#logging.getLogger().addHandler(logging.StreamHandler())
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
-        return render_template('index.html', commands=commands, addresses=receiving_addresses)
+        return render_template('index.html', commands=commands, addresses=receiving_addresses, command_parameters=command_parameters)
 
     if request.method == 'POST':
         command = request.get_json()
@@ -55,9 +55,9 @@ def send_all(command_addresses, command):
     results = {}
     for addr in command_addresses:
         if addr in receiving_addresses.keys():
-            result = master.send_command(receiving_addresses[addr], command)
-            results[addr] = result
+            #result = master.send_command(receiving_addresses[addr], command)
+            results[addr] = "butts"
     return results
 
 if __name__ == '__main__':
-    app.run(*settings.HOST)
+    app.run(*settings.HOST,debug=True)
