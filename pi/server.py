@@ -55,8 +55,8 @@ def send_all(command_addresses, command):
     results = {}
     for addr in command_addresses:
         if addr in receiving_addresses.keys():
-            #result = master.send_command(receiving_addresses[addr], command)
-            results[addr] = "butts"
+            result = master.send_command(receiving_addresses[addr], command)
+            results[addr] = result
     return results
 
 if __name__ == '__main__':
