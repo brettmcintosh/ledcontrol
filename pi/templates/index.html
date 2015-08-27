@@ -71,7 +71,11 @@
 														{% if innerKey.name == "Color" %}
 															<img src="../static/images/colorChart.png">
 														{% endif %}
-														<input class="{{key}}" type="{{innerKey.type}}" class="form-control" id="custom-{{key}}-{{ innerKey.order }}" value="{{innerKey.default}}" min="{{innerKey.min}}" max="{{innerKey.max}}" oninput="LEDcontrol.outputUpdate(value, {{key}}, {{innerKey.order}})" required {% if innerKey.default == 1 %} checked {% endif %}>
+														{% if innerKey.type == "checkbox" %}
+														<input class="{{key}}" type="{{innerKey.type}}" class="form-control" id="custom-{{key}}-{{ innerKey.order }}" value="{{innerKey.default}}" onchange="LEDcontrol.outputUpdateCheckbox(value, {{key}}, {{innerKey.order}})" required {% if innerKey.default == 1 %} checked {% endif %}>
+														{% else %}
+														<input class="{{key}}" type="{{innerKey.type}}" class="form-control" id="custom-{{key}}-{{ innerKey.order }}" value="{{innerKey.default}}" min="{{innerKey.min}}" max="{{innerKey.max}}" oninput="LEDcontrol.outputUpdate(value, {{key}}, {{innerKey.order}})" required>
+														{% endif %}
 													{%endfor%}
 												</div>
 											{%endfor%}
@@ -121,6 +125,7 @@
             for(var i = 0; i < custom_inputs.length; i++){
                 command.custom_values.push(custom_inputs[i].value);
             }
+			console.log(command);
             return command;
         },
         sendCommand: function (command) {
@@ -180,6 +185,15 @@
         },
 		outputUpdate: function(newValue, key, id) {
 			document.querySelector('#customValue-' + key.id + '-' + id).value = newValue;
+		},
+		outputUpdateCheckbox: function(newValue, key, id) {
+			if(newValue == 1) {
+				newValue = 0;
+			} else {
+				newValue = 1;
+			}
+			document.querySelector('#customValue-' + key.id + '-' + id).value = newValue;
+			document.querySelector('#custom-' + key.id + '-' + id).value = newValue;
 		},
 		updateSelectedCommand: function(oldCommand, newCommand) {
 			var oldCommandForm = document.getElementById(oldCommand);
