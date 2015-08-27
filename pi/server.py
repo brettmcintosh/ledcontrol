@@ -1,20 +1,20 @@
 import logging
 from flask import Flask, request, render_template, jsonify
 from flask.json import dumps
-#import tx
+import tx
 import settings
 from commands import commands, create_command_array, command_parameters
 from addresses import receiving_addresses
 
 
 app = Flask(__name__)
-#master = tx.Master()
+master = tx.Master()
 
 
-#logging.basicConfig(filename=settings.LOG_FILE_PATH,
-#                    format='%(asctime)s %(levelname)s: %(message)s',
-#                    level=logging.DEBUG)
-#logging.getLogger().addHandler(logging.StreamHandler())
+logging.basicConfig(filename=settings.LOG_FILE_PATH,
+                    format='%(asctime)s %(levelname)s: %(message)s',
+                    level=logging.DEBUG)
+logging.getLogger().addHandler(logging.StreamHandler())
 
 
 @app.route('/', methods=['GET', 'POST'])
