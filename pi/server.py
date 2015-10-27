@@ -60,4 +60,7 @@ def send_all(command_addresses, command):
     return results
 
 if __name__ == '__main__':
-    app.run(*settings.HOST,debug=True)
+    if settings.DEBUG:
+        app.run(*settings.HOST, debug=True)
+    else:
+        app.run(*settings.HOST)
