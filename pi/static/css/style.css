@@ -54,3 +54,9 @@ output {
 .commandBlock {
 	display:none;
 }
+
+#reset-btn {
+    right: 20px;
+    top: 25px;
+    position: absolute;
+}

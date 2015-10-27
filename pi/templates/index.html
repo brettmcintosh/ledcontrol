@@ -7,6 +7,7 @@
             <div class="panel panel-default" id="button-panel">
                 <div class="panel-heading">
                     LED Control
+                    <button class="btn btn-default btn-sm" id="reset-btn">Reset</button>
                 </div>
                 <div class="panel-body">
 
@@ -53,28 +54,29 @@
                                     <form id="custom-command-form" novalidate>
                                         <div class="form-group">
                                             <select class="form-control" id="custom-command-name"
-                                                    onchange="LEDcontrol.getCommandParameters(this.options[this.selectedIndex].text)">
-                                                {% for command_name, initializer in commands.items() %}
+{#                                                    onchange="LEDcontrol.getCommandParameters(this.options[this.selectedIndex].text)">#}
+                                                      onchange="LEDcontrol.updateSelectedCommand(LEDcontrol.selectedCommand, this.options[this.selectedIndex].text)">
+                                                {% for command_name, initializer in commands.items()|sort %}
                                                     <option id="{{ command_name }}-parameter" value="{{ initializer[0] }}">{{ command_name }}</option>
                                                 {% endfor %}
                                             </select>
 										</div>
 										<div class="divider"></div>
 										<div class="form-group">
-											{%for key in command_parameters%}
-												<div id="{{key}}" class="commandBlock">
-													<h3>{{key}}</h3>
+											{% for key in command_parameters %}
+												<div id="{{ key }}" class="commandBlock">
+													<h3>{{ key }}</h3>
 													{% for innerKey in command_parameters[key] %}
 														<div class="functionHeader">
-															{{innerKey.name}}&nbsp;:&nbsp;<output for="custom-{{ innerKey.order }}" id="customValue-{{key}}-{{ innerKey.order }}">{{innerKey.default}}</output>
+															{{ innerKey.name }}&nbsp;:&nbsp;<output for="custom-{{ innerKey.order }}" id="customValue-{{key}}-{{ innerKey.order }}">{{innerKey.default}}</output>
 														</div>
 														{% if innerKey.name == "Color" %}
 															<img src="../static/images/colorChart.png">
 														{% endif %}
 														{% if innerKey.type == "checkbox" %}
-														<input class="{{key}}" type="{{innerKey.type}}" class="form-control" id="custom-{{key}}-{{ innerKey.order }}" value="{{innerKey.default}}" onchange="LEDcontrol.outputUpdateCheckbox(value, {{key}}, {{innerKey.order}})" required {% if innerKey.default == 1 %} checked {% endif %}>
+														<input class="{{ key }}" type="{{ innerKey.type }}" class="form-control" id="custom-{{ key }}-{{ innerKey.order }}" value="{{ innerKey.default }}" onchange="LEDcontrol.outputUpdateCheckbox(value, {{ key }}, {{ innerKey.order }})" required {% if innerKey.default == 1 %} checked {% endif %}>
 														{% else %}
-														<input class="{{key}}" type="{{innerKey.type}}" class="form-control" id="custom-{{key}}-{{ innerKey.order }}" value="{{innerKey.default}}" min="{{innerKey.min}}" max="{{innerKey.max}}" oninput="LEDcontrol.outputUpdate(value, {{key}}, {{innerKey.order}})" required>
+														<input class="{{ key }}" type="{{ innerKey.type }}" class="form-control" id="custom-{{ key }}-{{ innerKey.order }}" value="{{ innerKey.default }}" min="{{ innerKey.min }}" max="{{ innerKey.max }}" oninput="LEDcontrol.outputUpdate(value, {{ key }}, {{ innerKey.order }})" required>
 														{% endif %}
 													{%endfor%}
 												</div>
@@ -100,7 +102,8 @@
 
 <script>
     window.LEDcontrol = {
-		selectedCommand: "Rainbow",
+{#		selectedCommand: "Rainbow",#}
+        selectedCommand: "{{ (commands.keys()|sort)[0] }}",
         getAddresses: function(){
             var addresses = [];
             var address_options = document.querySelectorAll('#address_select :checked');
@@ -196,11 +199,24 @@
 			document.querySelector('#custom-' + key.id + '-' + id).value = newValue;
 		},
 		updateSelectedCommand: function(oldCommand, newCommand) {
+            LEDcontrol.selectedCommand = newCommand;
 			var oldCommandForm = document.getElementById(oldCommand);
 			var newCommandForm = document.getElementById(newCommand);
 			$("#"+oldCommand).hide();
 			$("#"+newCommand).show();
-		}
+		},
+        reset: function(){
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", "/api/reset", true);
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    var result = JSON.parse(xmlhttp.responseText);
+                    console.log(result);
+                }
+            };
+            xmlhttp.send();
+        }
     };
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -210,13 +226,17 @@
             });
         {% endfor %}
 
+        document.getElementById('reset-btn').addEventListener("click", function() {
+            LEDcontrol.reset();
+        });
+
         $("#custom-command-form").submit(function(event){
 			var command = LEDcontrol.createCustomCommand();
 			LEDcontrol.sendCommand(command);
 			event.preventDefault();
         });
     });
-
+    $("#" + LEDcontrol.selectedCommand).show();
 </script>
 
 {% endblock body %}

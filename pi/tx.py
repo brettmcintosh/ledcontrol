@@ -76,6 +76,11 @@ class Master(XBee):
             frame_number = 1
         self.frame_counter = bytes([frame_number + 1])
 
+    def reset(self):
+        self.at(command=bytes("FR", "utf-8"), frame_id=self.frame_counter)
+        # self.ser.close()
+        self.ser = serial.Serial(SERIAL_DEV, BAUDRATE)
+
 
 def main():
     master = Master()

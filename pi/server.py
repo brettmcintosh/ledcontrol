@@ -13,8 +13,12 @@ master = tx.Master()
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH,
                     format='%(asctime)s %(levelname)s: %(message)s',
-                    level=logging.DEBUG)
-logging.getLogger().addHandler(logging.StreamHandler())
+                    level=logging.INFO)
+logger = logging.getLogger()
+# output logging to STDOUT
+logger.addHandler(logging.StreamHandler())
+if settings.DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -50,6 +54,13 @@ def get_params(command_name):
             return dumps(params)
     return "Command not found"
 
+
+@app.route('/api/reset', methods=['POST', ])
+def reset():
+    if request.method == 'POST':
+        print("Sending reset command...")
+        master.reset()
+        return jsonify(reset=True)
 
 def send_all(command_addresses, command):
     results = {}

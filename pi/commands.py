@@ -18,7 +18,8 @@ commands = {'Rainbow': [1, 20, 255, 1],
             'Janky_Chase': [7, 25, 2, 6, 4, 8, 40, 0], }
 
 
-command_parameters = {'Rainbow':[	
+command_parameters = {
+            'Rainbow':[
 				{'type':'range', 'name':'Interval', 'min':0, 'max':30, 'order':1, 'default':20}, 
 				{'type':'range', 'name':'Brightness', 'min':0, 'max':255, 'order':2, 'default':255}, 
 				{'type':'checkbox', 'name':'Reverse Direction', 'min':0, 'max':1, 'order':3, 'default':1}],
