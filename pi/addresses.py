@@ -9,4 +9,4 @@ receiving_addresses = {
 		       '1170': b'\x11\x70',
 		       '1180': b'\x11\x80',
 		       '1190': b'\x11\x90',
-               'Mast': b'\x11\x30', }
+               'Mast': b'\x11\x10', }

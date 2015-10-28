@@ -1,0 +1,5 @@
+# Machine-generated file - use "minicom -s" to change parameters.
+pu port             /dev/ttyAMA0
+pu baudrate         9600
+pu localecho        No 
+pu addlinefeed      Yes
