@@ -12,8 +12,8 @@ commands = {'Rainbow': [1, 20, 255, 1],
             'Scanner': [3, (0, 255), 10, 255, 0],
             'Fade': [4, 50, 250, 100, (5, 12), 1],
             'Bounce': [5, 10, 255, 32],
-            'Sparkle': [6, (0, 255), (1, 15), 30, (175, 255)],
-            'Sparkle_White': [6, 0, (1, 15), 0, 0],
+            'Sparkle': [6, (0, 255), 1, 30, (175, 255)],
+            'Sparkle_White': [6, 0, 1, 0, 0],
             'Random_Chase': [7, 25, 2, 8, 2, 8, 40, 1],
             'Janky_Chase': [7, 25, 2, 6, 4, 8, 40, 0], }
 
@@ -47,12 +47,12 @@ command_parameters = {
 				{'type':'range', 'name':'Speed', 'min':0, 'max':100, 'order':3, 'default':32}],
 			'Sparkle':[	
 				{'type':'range', 'name':'Color', 'min':0, 'max':255, 'order':1, 'default':75}, 
-				{'type':'range', 'name':'Color Interval', 'min':1, 'max':15, 'order':2, 'default':10}, 
+				{'type':'range', 'name':'Interval', 'min':1, 'max':15, 'order':2, 'default':1},
 				{'type':'range', 'name':'Color Variety', 'min':0, 'max':60, 'order':3, 'default':30}, 
 				{'type':'range', 'name':'Saturation', 'min':100, 'max':255, 'order':4, 'default':225}],
 			'Sparkle_White':[	
 				{'type':'range', 'name':'Color', 'min':0, 'max':255, 'order':1, 'default':0}, 
-				{'type':'range', 'name':'Color Interval', 'min':1, 'max':15, 'order':2, 'default':10}, 
+				{'type':'range', 'name':'Interval', 'min':1, 'max':15, 'order':2, 'default':1},
 				{'type':'range', 'name':'Color Variety', 'min':0, 'max':60, 'order':3, 'default':0}, 
 				{'type':'range', 'name':'Saturation', 'min':100, 'max':255, 'order':4, 'default':0}],
 			'Random_Chase': [		
