@@ -59,7 +59,7 @@ def get_params(command_name):
 def reset():
     if request.method == 'POST':
         print("Sending reset command...")
-        master.reset()
+        master.hard_reset()
         return jsonify(reset=True)
 
 def send_all(command_addresses, command):

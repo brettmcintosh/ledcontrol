@@ -4,16 +4,20 @@ import time
 import array
 import logging
 import settings
+import RPi.GPIO as io
 
 
+# config for serial connections
 SERIAL_DEV = settings.SERIAL_DEV
 BAUDRATE = settings.BAUDRATE
 
 
+# Xbee ACK constants
 SUCCESS = b'\x00'
 NO_ACK = b'\x01'
 
 
+# sample command arrays
 CHASE = array.array('B', [18, 8, 5, 8, 8])
 BLACK = array.array('B', b'40')
 
@@ -76,9 +80,19 @@ class Master(XBee):
             frame_number = 1
         self.frame_counter = bytes([frame_number + 1])
 
-    def reset(self):
+    def soft_reset(self):
         self.at(command=bytes("FR", "utf-8"), frame_id=self.frame_counter)
         # self.ser.close()
+        self.ser = serial.Serial(SERIAL_DEV, BAUDRATE)
+
+    def hard_reset(self):
+        # send reset pulse on pin 24
+        io.setmode(io.BCM)
+        io.setup(settings.RESET_PIN, io.OUT, initial=io.LOW)
+        time.sleep(.01)
+        io.cleanup()
+
+        # reconnect serial
         self.ser = serial.Serial(SERIAL_DEV, BAUDRATE)
 
 

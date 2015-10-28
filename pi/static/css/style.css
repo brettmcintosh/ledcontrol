@@ -56,7 +56,6 @@ output {
 }
 
 #reset-btn {
-    right: 20px;
-    top: 25px;
-    position: absolute;
+    position: relative;
+    bottom: 5px;
 }
